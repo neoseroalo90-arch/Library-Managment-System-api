@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const bookRoutes = require('./routes/bookRoutes');
+const memberRoutes = require('./routes/memberRoutes');
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 app.use('/api/books', bookRoutes);
+app.use('/api/members', memberRoutes);
 
 app.get('/', (req, res) => {
     res.status(200).json({
