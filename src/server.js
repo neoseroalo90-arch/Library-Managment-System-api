@@ -7,6 +7,7 @@ const bookRoutes = require('./routes/bookRoutes');
 const memberRoutes = require('./routes/memberRoutes');
 const authorRoutes = require('./routes/authorRoutes');
 const loanRoutes = require('./routes/loanRoutes');
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.use('/api/books', bookRoutes);
 app.use('/api/members', memberRoutes);
 app.use('/api/authors', authorRoutes);
 app.use('/api/loans', loanRoutes);
+
+app.use(errorHandler);
 
 app.get('/', (req, res) => {
     res.status(200).json({
