@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const validateAuthor = require('../middleware/validateAuthor');
+
 const {
   getAuthors,
   getAuthorById,
@@ -11,7 +13,7 @@ const {
 
 router.get('/', getAuthors);
 router.get('/:id', getAuthorById);
-router.post('/', createAuthor);
+router.post('/', validateAuthor, createAuthor);
 router.put('/:id', updateAuthor);
 router.delete('/:id', deleteAuthor);
 
