@@ -1,12 +1,12 @@
-const books = require('../data/books');
+const bookService = require('../service/bookService');
 
 const getBooks = (req, res) => {
-  res.status(200).json(books);
+  res.json(bookService.getAllBooks());
 };
 
 const getBookById = (req, res) => {
-  const book = books.find(
-    b => b.id === parseInt(req.params.id)
+  const book = bookService.getBookById(
+    req.params.id
   );
 
   if (!book) {
@@ -19,22 +19,18 @@ const getBookById = (req, res) => {
 };
 
 const createBook = (req, res) => {
-  const newBook = {
-    id: books.length + 1,
-    title: req.body.title,
-    author: req.body.author,
-    available: true
-  };
+  const book =
+    bookService.createBook(req.body);
 
-  books.push(newBook);
-
-  res.status(201).json(newBook);
+  res.status(201).json(book);
 };
 
 const updateBook = (req, res) => {
-  const book = books.find(
-    b => b.id === parseInt(req.params.id)
-  );
+  const book =
+    bookService.updateBook(
+      req.params.id,
+      req.body
+    );
 
   if (!book) {
     return res.status(404).json({
@@ -42,24 +38,20 @@ const updateBook = (req, res) => {
     });
   }
 
-  book.title = req.body.title || book.title;
-  book.author = req.body.author || book.author;
-
   res.json(book);
 };
 
 const deleteBook = (req, res) => {
-  const index = books.findIndex(
-    b => b.id === parseInt(req.params.id)
-  );
+  const deleted =
+    bookService.deleteBook(
+      req.params.id
+    );
 
-  if (index === -1) {
+  if (!deleted) {
     return res.status(404).json({
       message: 'Book not found'
     });
   }
-
-  books.splice(index, 1);
 
   res.json({
     message: 'Book deleted successfully'
