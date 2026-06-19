@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
+const connectDB = require('./config/database');
 const cors = require('cors');
 const morgan = require('morgan');
 const bookRoutes = require('./routes/bookRoutes');
@@ -10,6 +11,8 @@ const loanRoutes = require('./routes/loanRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
+
+connectDB();
 
 app.use(cors());
 app.use(express.json());

@@ -1,70 +1,103 @@
-const members = require('../data/members');
+const memberService = require('../service/memberService');
 
-const getMembers = (req, res) => {
-  res.json(members);
-};
+const getMembers = async (req, res, next) => {
+  try {
+    const members =
+      await memberService.getAllMembers();
 
-const getMemberById = (req, res) => {
-  const member = members.find(
-    m => m.id === parseInt(req.params.id)
-  );
-
-  if (!member) {
-    return res.status(404).json({
-      message: 'Member not found'
-    });
+    res.json(members);
+  } catch (error) {
+    next(error);
   }
-
-  res.json(member);
 };
 
-const createMember = (req, res) => {
-  const newMember = {
-    id: members.length + 1,
-    name: req.body.name,
-    email: req.body.email,
-    phone: req.body.phone
-  };
+const getMemberById = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const member =
+      await memberService.getMemberById(
+        req.params.id
+      );
 
-  members.push(newMember);
+    if (!member) {
+      return res.status(404).json({
+        message: 'Member not found'
+      });
+    }
 
-  res.status(201).json(newMember);
-};
-
-const updateMember = (req, res) => {
-  const member = members.find(
-    m => m.id === parseInt(req.params.id)
-  );
-
-  if (!member) {
-    return res.status(404).json({
-      message: 'Member not found'
-    });
+    res.json(member);
+  } catch (error) {
+    next(error);
   }
-
-  member.name = req.body.name || member.name;
-  member.email = req.body.email || member.email;
-  member.phone = req.body.phone || member.phone;
-
-  res.json(member);
 };
 
-const deleteMember = (req, res) => {
-  const index = members.findIndex(
-    m => m.id === parseInt(req.params.id)
-  );
+const createMember = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const member =
+      await memberService.createMember(
+        req.body
+      );
 
-  if (index === -1) {
-    return res.status(404).json({
-      message: 'Member not found'
-    });
+    res.status(201).json(member);
+  } catch (error) {
+    next(error);
   }
+};
 
-  members.splice(index, 1);
+const updateMember = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const member =
+      await memberService.updateMember(
+        req.params.id,
+        req.body
+      );
 
-  res.json({
-    message: 'Member deleted successfully'
-  });
+    if (!member) {
+      return res.status(404).json({
+        message: 'Member not found'
+      });
+    }
+
+    res.json(member);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteMember = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const deleted =
+      await memberService.deleteMember(
+        req.params.id
+      );
+
+    if (!deleted) {
+      return res.status(404).json({
+        message: 'Member not found'
+      });
+    }
+
+    res.json({
+      message: 'Member deleted successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {

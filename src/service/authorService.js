@@ -1,51 +1,30 @@
-const authors = require('../data/authors');
+const Author = require('../models/Author');
 
-const getAllAuthors = () => authors;
+const getAllAuthors = async () => {
+  return await Author.find();
+};
 
-const getAuthorById = (id) => {
-  return authors.find(
-    author => author.id === parseInt(id)
+const getAuthorById = async (id) => {
+  return await Author.findById(id);
+};
+
+const createAuthor = async (authorData) => {
+  return await Author.create(authorData);
+};
+
+const updateAuthor = async (id, authorData) => {
+  return await Author.findByIdAndUpdate(
+    id,
+    authorData,
+    {
+      new: true,
+      runValidators: true
+    }
   );
 };
 
-const createAuthor = (authorData) => {
-  const newAuthor = {
-    id: authors.length + 1,
-    name: authorData.name
-  };
-
-  authors.push(newAuthor);
-
-  return newAuthor;
-};
-
-const updateAuthor = (id, authorData) => {
-  const author = authors.find(
-    author => author.id === parseInt(id)
-  );
-
-  if (!author) {
-    return null;
-  }
-
-  author.name =
-    authorData.name || author.name;
-
-  return author;
-};
-
-const deleteAuthor = (id) => {
-  const index = authors.findIndex(
-    author => author.id === parseInt(id)
-  );
-
-  if (index === -1) {
-    return false;
-  }
-
-  authors.splice(index, 1);
-
-  return true;
+const deleteAuthor = async (id) => {
+  return await Author.findByIdAndDelete(id);
 };
 
 module.exports = {

@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const validateBook = require('../middleware/validateBook');
+
+const validateBook =
+  require('../middleware/validateBook');
+
+const validateBookUpdate =
+  require('../middleware/validateBookUpdate');
 
 const {
   getBooks,
@@ -14,9 +19,17 @@ router.get('/', getBooks);
 
 router.get('/:id', getBookById);
 
-router.post('/', validateBook, createBook);
+router.post(
+  '/',
+  validateBook,
+  createBook
+);
 
-router.put('/:id', validateBook, updateBook);
+router.put(
+  '/:id',
+  validateBookUpdate,
+  updateBook
+);
 
 router.delete('/:id', deleteBook);
 

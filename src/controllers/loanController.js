@@ -1,85 +1,103 @@
-const loans = require('../data/loans');
+const loanService = require('../service/loanService');
 
-// GET all loans
-const getLoans = (req, res) => {
-  res.json(loans);
-};
+const getLoans = async (req, res, next) => {
+  try {
+    const loans =
+      await loanService.getAllLoans();
 
-// GET loan by ID
-const getLoanById = (req, res) => {
-  const loan = loans.find(
-    loan => loan.id === parseInt(req.params.id)
-  );
-
-  if (!loan) {
-    return res.status(404).json({
-      message: 'Loan not found'
-    });
+    res.json(loans);
+  } catch (error) {
+    next(error);
   }
-
-  res.json(loan);
 };
 
-// POST create new loan
-const createLoan = (req, res) => {
-  const newLoan = {
-    id: loans.length + 1,
-    memberId: req.body.memberId,
-    bookId: req.body.bookId,
-    loanDate: req.body.loanDate,
-    returnDate: req.body.returnDate || null,
-    returned: req.body.returned || false
-  };
+const getLoanById = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const loan =
+      await loanService.getLoanById(
+        req.params.id
+      );
 
-  loans.push(newLoan);
+    if (!loan) {
+      return res.status(404).json({
+        message: 'Loan not found'
+      });
+    }
 
-  res.status(201).json(newLoan);
-};
-
-// PUT update loan
-const updateLoan = (req, res) => {
-  const loan = loans.find(
-    loan => loan.id === parseInt(req.params.id)
-  );
-
-  if (!loan) {
-    return res.status(404).json({
-      message: 'Loan not found'
-    });
+    res.json(loan);
+  } catch (error) {
+    next(error);
   }
-
-  loan.memberId = req.body.memberId || loan.memberId;
-  loan.bookId = req.body.bookId || loan.bookId;
-  loan.loanDate = req.body.loanDate || loan.loanDate;
-  loan.returnDate =
-    req.body.returnDate !== undefined
-      ? req.body.returnDate
-      : loan.returnDate;
-  loan.returned =
-    req.body.returned !== undefined
-      ? req.body.returned
-      : loan.returned;
-
-  res.json(loan);
 };
 
-// DELETE loan
-const deleteLoan = (req, res) => {
-  const index = loans.findIndex(
-    loan => loan.id === parseInt(req.params.id)
-  );
+const createLoan = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const loan =
+      await loanService.createLoan(
+        req.body
+      );
 
-  if (index === -1) {
-    return res.status(404).json({
-      message: 'Loan not found'
-    });
+    res.status(201).json(loan);
+  } catch (error) {
+    next(error);
   }
+};
 
-  loans.splice(index, 1);
+const updateLoan = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const loan =
+      await loanService.updateLoan(
+        req.params.id,
+        req.body
+      );
 
-  res.json({
-    message: 'Loan deleted successfully'
-  });
+    if (!loan) {
+      return res.status(404).json({
+        message: 'Loan not found'
+      });
+    }
+
+    res.json(loan);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteLoan = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const deleted =
+      await loanService.deleteLoan(
+        req.params.id
+      );
+
+    if (!deleted) {
+      return res.status(404).json({
+        message: 'Loan not found'
+      });
+    }
+
+    res.json({
+      message: 'Loan deleted successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {
@@ -88,4 +106,4 @@ module.exports = {
   createLoan,
   updateLoan,
   deleteLoan
-}; 
+};
