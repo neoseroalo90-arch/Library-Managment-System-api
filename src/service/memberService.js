@@ -1,55 +1,30 @@
-const members = require('../data/members');
+const Member = require('../models/Member');
 
-const getAllMembers = () => members;
+const getAllMembers = async () => {
+  return await Member.find();
+};
 
-const getMemberById = (id) => {
-  return members.find(
-    member => member.id === parseInt(id)
+const getMemberById = async (id) => {
+  return await Member.findById(id);
+};
+
+const createMember = async (memberData) => {
+  return await Member.create(memberData);
+};
+
+const updateMember = async (id, memberData) => {
+  return await Member.findByIdAndUpdate(
+    id,
+    memberData,
+    {
+      new: true,
+      runValidators: true
+    }
   );
 };
 
-const createMember = (memberData) => {
-  const newMember = {
-    id: members.length + 1,
-    name: memberData.name,
-    email: memberData.email
-  };
-
-  members.push(newMember);
-
-  return newMember;
-};
-
-const updateMember = (id, memberData) => {
-  const member = members.find(
-    member => member.id === parseInt(id)
-  );
-
-  if (!member) {
-    return null;
-  }
-
-  member.name =
-    memberData.name || member.name;
-
-  member.email =
-    memberData.email || member.email;
-
-  return member;
-};
-
-const deleteMember = (id) => {
-  const index = members.findIndex(
-    member => member.id === parseInt(id)
-  );
-
-  if (index === -1) {
-    return false;
-  }
-
-  members.splice(index, 1);
-
-  return true;
+const deleteMember = async (id) => {
+  return await Member.findByIdAndDelete(id);
 };
 
 module.exports = {

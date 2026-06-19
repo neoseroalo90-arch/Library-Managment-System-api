@@ -1,69 +1,103 @@
-const authors = require('../data/authors');
+const authorService = require('../service/authorService');
 
-const getAuthors = (req, res) => {
-  res.json(authors);
-};
+const getAuthors = async (req, res, next) => {
+  try {
+    const authors =
+      await authorService.getAllAuthors();
 
-const getAuthorById = (req, res) => {
-  const author = authors.find(
-    author => author.id === parseInt(req.params.id)
-  );
-
-  if (!author) {
-    return res.status(404).json({
-      message: 'Author not found'
-    });
+    res.json(authors);
+  } catch (error) {
+    next(error);
   }
-
-  res.json(author);
 };
 
-const createAuthor = (req, res) => {
-  const newAuthor = {
-    id: authors.length + 1,
-    name: req.body.name,
-    nationality: req.body.nationality
-  };
+const getAuthorById = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const author =
+      await authorService.getAuthorById(
+        req.params.id
+      );
 
-  authors.push(newAuthor);
+    if (!author) {
+      return res.status(404).json({
+        message: 'Author not found'
+      });
+    }
 
-  res.status(201).json(newAuthor);
-};
-
-const updateAuthor = (req, res) => {
-  const author = authors.find(
-    author => author.id === parseInt(req.params.id)
-  );
-
-  if (!author) {
-    return res.status(404).json({
-      message: 'Author not found'
-    });
+    res.json(author);
+  } catch (error) {
+    next(error);
   }
-
-  author.name = req.body.name || author.name;
-  author.nationality =
-    req.body.nationality || author.nationality;
-
-  res.json(author);
 };
 
-const deleteAuthor = (req, res) => {
-  const index = authors.findIndex(
-    author => author.id === parseInt(req.params.id)
-  );
+const createAuthor = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const author =
+      await authorService.createAuthor(
+        req.body
+      );
 
-  if (index === -1) {
-    return res.status(404).json({
-      message: 'Author not found'
-    });
+    res.status(201).json(author);
+  } catch (error) {
+    next(error);
   }
+};
 
-  authors.splice(index, 1);
+const updateAuthor = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const author =
+      await authorService.updateAuthor(
+        req.params.id,
+        req.body
+      );
 
-  res.json({
-    message: 'Author deleted successfully'
-  });
+    if (!author) {
+      return res.status(404).json({
+        message: 'Author not found'
+      });
+    }
+
+    res.json(author);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteAuthor = async (
+  req,
+  res,
+  next
+) => {
+  try {
+    const deleted =
+      await authorService.deleteAuthor(
+        req.params.id
+      );
+
+    if (!deleted) {
+      return res.status(404).json({
+        message: 'Author not found'
+      });
+    }
+
+    res.json({
+      message: 'Author deleted successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {
