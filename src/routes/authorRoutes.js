@@ -1,11 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const validateAuthor =
-  require('../middleware/validateAuthor');
-
-const validateAuthorUpdate =
-  require('../middleware/validateAuthorUpdate');
+const authMiddleware = require('../middleware/authMiddleware');
+const validateAuthor = require('../middleware/validateAuthor');
 
 const {
   getAuthors,
@@ -15,22 +12,28 @@ const {
   deleteAuthor
 } = require('../controllers/authorController');
 
+// Public routes
 router.get('/', getAuthors);
-
 router.get('/:id', getAuthorById);
 
+// Protected routes
 router.post(
   '/',
+  authMiddleware,
   validateAuthor,
   createAuthor
 );
 
 router.put(
   '/:id',
-  validateAuthorUpdate,
+  authMiddleware,
   updateAuthor
 );
 
-router.delete('/:id', deleteAuthor);
+router.delete(
+  '/:id',
+  authMiddleware,
+  deleteAuthor
+);
 
 module.exports = router;
