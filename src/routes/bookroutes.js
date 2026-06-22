@@ -1,11 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const validateBook =
-  require('../middleware/validateBook');
-
-const validateBookUpdate =
-  require('../middleware/validateBookUpdate');
+const validateBook = require('../middleware/validateBook');
+const authMiddleware = require('../middleware/authMiddleware');
 
 const {
   getBooks,
@@ -15,22 +12,29 @@ const {
   deleteBook
 } = require('../controllers/bookController');
 
+// Public routes
 router.get('/', getBooks);
-
 router.get('/:id', getBookById);
 
+// Protected routes
 router.post(
   '/',
+  authMiddleware,
   validateBook,
   createBook
 );
 
 router.put(
   '/:id',
-  validateBookUpdate,
+  authMiddleware,
+  validateBook,
   updateBook
 );
 
-router.delete('/:id', deleteBook);
+router.delete(
+  '/:id',
+  authMiddleware,
+  deleteBook
+);
 
 module.exports = router;

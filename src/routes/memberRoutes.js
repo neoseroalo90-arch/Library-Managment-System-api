@@ -1,11 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const validateMember =
-  require('../middleware/validateMember');
-
-const validateMemberUpdate =
-  require('../middleware/validateMemberUpdate');
+const authMiddleware = require('../middleware/authMiddleware');
+const validateMember = require('../middleware/validateMember');
 
 const {
   getMembers,
@@ -15,22 +12,28 @@ const {
   deleteMember
 } = require('../controllers/memberController');
 
+// Public routes
 router.get('/', getMembers);
-
 router.get('/:id', getMemberById);
 
+// Protected routes
 router.post(
   '/',
+  authMiddleware,
   validateMember,
   createMember
 );
 
 router.put(
   '/:id',
-  validateMemberUpdate,
+  authMiddleware,
   updateMember
 );
 
-router.delete('/:id', deleteMember);
+router.delete(
+  '/:id',
+  authMiddleware,
+  deleteMember
+);
 
 module.exports = router;

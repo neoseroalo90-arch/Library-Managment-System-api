@@ -1,11 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const validateLoan =
-  require('../middleware/validateLoan');
-
-const validateLoanUpdate =
-  require('../middleware/validateLoanUpdate');
+const authMiddleware = require('../middleware/authMiddleware');
+const validateLoan = require('../middleware/validateLoan');
 
 const {
   getLoans,
@@ -15,22 +12,28 @@ const {
   deleteLoan
 } = require('../controllers/loanController');
 
+// Public routes
 router.get('/', getLoans);
-
 router.get('/:id', getLoanById);
 
+// Protected routes
 router.post(
   '/',
+  authMiddleware,
   validateLoan,
   createLoan
 );
 
 router.put(
   '/:id',
-  validateLoanUpdate,
+  authMiddleware,
   updateLoan
 );
 
-router.delete('/:id', deleteLoan);
+router.delete(
+  '/:id',
+  authMiddleware,
+  deleteLoan
+);
 
 module.exports = router;
