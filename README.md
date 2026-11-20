@@ -6,3 +6,11 @@ A Library Management System built with Node.js and react
 - Morgan configured
 - Environment variables configured
 - Initial server created 
+- Project Overview
+- Features
+- Installation
+- Running the API
+- Available Endpoints
+- Testing Instructions
+- Branch Strategy
+- Pull Requests

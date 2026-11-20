@@ -1,17 +1,32 @@
 require('dotenv').config();
 
 const express = require('express');
+const connectDB = require('./config/database');
 const cors = require('cors');
 const morgan = require('morgan');
 const bookRoutes = require('./routes/bookRoutes');
+const memberRoutes = require('./routes/memberRoutes');
+const authorRoutes = require('./routes/authorRoutes');
+const loanRoutes = require('./routes/loanRoutes');
+const errorHandler = require('./middleware/errorHandler');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
+
+connectDB();
 
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
 app.use('/api/books', bookRoutes);
+app.use('/api/members', memberRoutes);
+app.use('/api/authors', authorRoutes);
+app.use('/api/loans', loanRoutes);
+
+app.use(errorHandler);
+
+app.use('/api/auth', authRoutes);
 
 app.get('/', (req, res) => {
     res.status(200).json({
